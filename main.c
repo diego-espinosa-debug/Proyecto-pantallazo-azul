@@ -1,9 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-//yaaaaa ahora 
-//probando los git para el proyectoxxxxxxxx
-int main(void) {
-  //printf("Hola proyectoxx\n");
-  printf("Que pasa realmente con los gitxxxxxxx\n");
-  return 0;
+typedef struct animal{
+  char nombre[100];
+  int numero;
+  char especie[100];
+  char habitat[100];
+}animal;
+
+int main(){
+  printf("**BioDex**\n\n");
+  return EXIT_SUCCESS;
 }
