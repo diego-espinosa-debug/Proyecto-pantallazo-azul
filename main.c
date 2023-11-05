@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>>
+#include <string.h>
 typedef struct animal{
   char nombre[100];
   int numero;
@@ -23,7 +23,7 @@ typedef struct vegetal{
 //Educación sobre especies. Se informará de manera breve sobre el vegetal y como el usuario podría contribuir para mantener a salvo esta especie
 }vegetal;
 int validarInstruccion();
-void mostrarOpciones();
+void mostrarOpcionesPrincipal();
 
 
 
@@ -31,12 +31,26 @@ int main(){
   printf("**BioDex**\n\n");
   printf("Bienvenido al BioDex, el lugar donde podrás encontrar información sobre animales y vegetales en camino a la extinción.\n\n");
 
-  mostrarOpciones(); // se mostraran todas las opciones disponibles en el menu principal 
   int instruccion;
-  instruccion = validarInstruccion();
-
-
-
+  do{
+    mostrarOpcionesPrincipal(); // se mostraran todas las opciones disponibles en el menu principal 
+    instruccion = validarInstruccion();
+    
+    switch(instruccion){
+      case(1):
+        
+        break;
+      case(2):
+        break;
+      case(3):
+      break;
+      case(4):
+      break;
+      case(5):
+      break;
+    }
+  }while(instruccion != 0);
+  printf("\nGracias por utilizar Biodex...");
 
   
   //--------------------------------------------------------
@@ -82,13 +96,19 @@ int validarInstruccion(){
         return instruccion;
       } else{
           printf("debe ingresar una opcion valida\n");
-          mostrarOpciones();
+          mostrarOpcionesPrincipal();
           while(getchar() != '\n');
       }
     }
   }  
 }
 
-void mostrarOpciones(){
-  return;
+void mostrarOpcionesPrincipal(){
+  
+  printf("(1) Si desea ver el catalogo de especies\n");
+  printf("(2) Si desea ver informacion detallada del animal o vegetal\n");
+  printf("(3) Si desea hacer una busqueda mas especifica \n");
+  printf("(4) Si desea guardar un animal o vegetal en especifico\n");
+  printf("(5) Si desea ver el historial de busquedad realizado\n");
+  printf("(0) si desea cerrar el programa\n");
 }
