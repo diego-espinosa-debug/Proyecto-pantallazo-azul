@@ -95,13 +95,13 @@ int validarInstruccion(){
 void mostrarOpcionesPrincipal(){
   
   printf("(1) Si desea ver el catalogo de especies\n");
-  printf("(2) Si desea ver informacion detallada del animal o vegetal\n");
+  printf("(2) Si desea ver informacion detallada de algun animal o vegetal\n");
   printf("(3) Si desea hacer una busqueda mas especifica \n");
   printf("(4) Si desea guardar un animal o vegetal en especifico\n");
   printf("(5) Si desea ver el historial de busquedad realizado\n");
   printf("(0) si desea cerrar el programa\n");
 }
-
+// en el caso 2 y 3 creo que hay que cambiar la pregunta o algo, porque en el caso 2 hay que realizar el caso 3, por lo que tiene mas sentido eliminar el caso 2 y que este sea una opcion que se da despues se realizar la busqueda en el caso 3. Con la misma logica que lo escrito anteriormente, el caso 4 puede ser una opcion del caso 3 
 void switchPrincipal(int instruccion){
   switch(instruccion){
     case(1):
@@ -114,13 +114,21 @@ void switchPrincipal(int instruccion){
       printf("\n");
       break;
     case(2):
+      printf("ingrese el id del animal que desee obtener informacion\n");
+      //int busqueda;
+      //scanf("%d", busqueda); esta es una idea de como puede ser, para tener algo escrito, lo mas probable es que esto lo hagamos con algun TDA
       break;
     case(3):
-    break;
+      
+      printf("ingrese el id del animal que desee obtener informacion\n");
+      //int busqueda;
+      //scanf("%d", busqueda); esta es una idea de como puede ser, para tener algo escrito, lo mas probable es que esto lo hagamos con algun TDA
+      break;
     case(4):
-    break;
+      break;
     case(5):
-    break;
+      //historial();
+      break;
   }
 
   
@@ -167,18 +175,25 @@ void mostrarOpcionesCaso1(){
 void switchCaso1(int instruccionCaso1){
   switch(instruccionCaso1){
     case(1):
-      break;
+      //mostrarAnimalesPeligro();
+     break;
     case(2):
-    break;
+      //mostrarVegetalesPerigro();
+      break;
     case(3):
-    break;
+      //mostrarAnimalesTerrestres();
+     break;
     case(4):
-    break;
+      //mostrarAnimalesVoladores();
+     break;
     case(5):
-    break;
+      //mostrarAnimalesAcuaticos();
+     break;
     case(6):
-    break;
+      //mostrarVegetalesContinentes();
+     break;
     case(7):
-    break;
+      //mostrarVegetalesAcuaticos();
+      break;
   }
 }
