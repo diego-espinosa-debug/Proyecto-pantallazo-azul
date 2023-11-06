@@ -22,10 +22,10 @@ typedef struct vegetal{
 //Exploración y Búsqueda. Se implementaran formas para que puedas buscar de manera específica el animal o vegetal que desee el usuario
 //Educación sobre especies. Se informará de manera breve sobre el vegetal y como el usuario podría contribuir para mantener a salvo esta especie
 }vegetal;
-int validarInstruccion();
 void mostrarOpcionesPrincipal();
-
-
+int validarInstruccion();
+void mostrarOpcionesCaso1();
+int validarInstruccionCaso1();
 
 int main(){
   printf("**BioDex**\n\n");
@@ -38,7 +38,10 @@ int main(){
     
     switch(instruccion){
       case(1):
-        
+        printf("");
+        int instruccionCaso1;
+        validarInstruccionCaso1();
+        if(instruccionCaso1 == 0) break;
         break;
       case(2):
         break;
@@ -86,16 +89,16 @@ int validarInstruccion(){
     printf("Que desea hacer: \n");
 
     if(scanf("%9s", aux) != 1){
-      printf("debe ingresar una opcion valida\n");
+      printf("debe ingresar una opcion valida\n\n");
       while(getchar() != '\n');
     } else {
         int instruccion;
-        if(strlen(aux) == 1 &&  aux[0] >= '0' && aux[0] <= '9')/* hay que ver el maximo de instrucciones y remplazarlo en el 9 */{
+        if(strlen(aux) == 1 &&  aux[0] >= '0' && aux[0] <= '5')/* hay que ver el maximo de instrucciones y remplazarlo en el 9 */{
         instruccion = atoi(aux);
         while(getchar() != '\n');
         return instruccion;
       } else{
-          printf("debe ingresar una opcion valida\n");
+          printf("debe ingresar una opcion valida\n\n");
           mostrarOpcionesPrincipal();
           while(getchar() != '\n');
       }
@@ -111,4 +114,42 @@ void mostrarOpcionesPrincipal(){
   printf("(4) Si desea guardar un animal o vegetal en especifico\n");
   printf("(5) Si desea ver el historial de busquedad realizado\n");
   printf("(0) si desea cerrar el programa\n");
+}
+
+int validarInstruccionCaso1(){
+  char aux[10];
+
+  while(1){
+    printf("Elija que catalogo desee ver\n\n");
+    mostrarOpcionesCaso1();
+    if(scanf("%9s", aux) != 1){
+      printf("debe ingresar una opcion valida\n\n");
+      while(getchar() != '\n');
+    } else {
+        int instruccion;
+        if(strlen(aux) == 1 &&  aux[0] >= '0' && aux[0] <= '8'){
+        instruccion = atoi(aux);
+        while(getchar() != '\n');
+        if(instruccion == 0) return 0;
+        mostrarOpcionesCaso1();
+        return instruccion;
+      } else{
+          printf("debe ingresar una opcion valida\n\n");
+          mostrarOpcionesCaso1();
+          while(getchar() != '\n');
+      }
+    }
+  }  
+}
+
+void mostrarOpcionesCaso1(){
+  
+  printf("(1) Si desea ver 50 animales en peligro de extinción\n");
+  printf("(2) Si desea ver 50 vegetales en peligro de extinción\n");
+  printf("(3) Si desea ver 50 animales terrestres en peligro de extinción\n");
+  printf("(4) Si desea ver 50 animales voladores en peligro de extinción\n");
+  printf("(5) Si desea ver 50 animales acuaticos en peligro de extinción\n");
+  printf("(6) Si desea ver 50 vegetales continentales en peligro de extinción\n");
+  printf("(7) Si desea ver 50 vegetales acuaticos en peligro de extinción\n");
+  printf("(0) Si desea volver al menu principal\n");
 }
