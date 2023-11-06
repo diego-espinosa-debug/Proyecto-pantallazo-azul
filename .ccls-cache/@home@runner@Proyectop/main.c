@@ -24,6 +24,8 @@ typedef struct vegetal{
 }vegetal;
 void mostrarOpcionesPrincipal();
 int validarInstruccion();
+void switchPrincipal(int);
+void switchCaso1(int);
 void mostrarOpcionesCaso1();
 int validarInstruccionCaso1();
 
@@ -35,23 +37,7 @@ int main(){
   do{
     mostrarOpcionesPrincipal(); // se mostraran todas las opciones disponibles en el menu principal 
     instruccion = validarInstruccion();
-    
-    switch(instruccion){
-      case(1):
-        printf("");
-        int instruccionCaso1;
-        validarInstruccionCaso1();
-        if(instruccionCaso1 == 0) break;
-        break;
-      case(2):
-        break;
-      case(3):
-      break;
-      case(4):
-      break;
-      case(5):
-      break;
-    }
+    switchPrincipal(instruccion);
   }while(instruccion != 0);
   printf("\nGracias por utilizar Biodex...");
 
@@ -116,6 +102,30 @@ void mostrarOpcionesPrincipal(){
   printf("(0) si desea cerrar el programa\n");
 }
 
+void switchPrincipal(int instruccion){
+  switch(instruccion){
+    case(1):
+      printf("");
+      int instruccionCaso1;
+      do{
+        instruccionCaso1 = validarInstruccionCaso1();
+        switchCaso1(instruccionCaso1);
+      }while(instruccionCaso1 != 0);
+      printf("\n");
+      break;
+    case(2):
+      break;
+    case(3):
+    break;
+    case(4):
+    break;
+    case(5):
+    break;
+  }
+
+  
+}
+
 int validarInstruccionCaso1(){
   char aux[10];
 
@@ -152,4 +162,23 @@ void mostrarOpcionesCaso1(){
   printf("(6) Si desea ver 50 vegetales continentales en peligro de extinción\n");
   printf("(7) Si desea ver 50 vegetales acuaticos en peligro de extinción\n");
   printf("(0) Si desea volver al menu principal\n");
+}
+
+void switchCaso1(int instruccionCaso1){
+  switch(instruccionCaso1){
+    case(1):
+      break;
+    case(2):
+    break;
+    case(3):
+    break;
+    case(4):
+    break;
+    case(5):
+    break;
+    case(6):
+    break;
+    case(7):
+    break;
+  }
 }
