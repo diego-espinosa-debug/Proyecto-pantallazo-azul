@@ -22,6 +22,7 @@ typedef struct vegetal{
 //Exploración y Búsqueda. Se implementaran formas para que puedas buscar de manera específica el animal o vegetal que desee el usuario
 //Educación sobre especies. Se informará de manera breve sobre el vegetal y como el usuario podría contribuir para mantener a salvo esta especie
 }vegetal;
+
 void mostrarOpcionesPrincipal();
 int validarInstruccion();
 void switchPrincipal(int);
@@ -30,14 +31,19 @@ void mostrarOpcionesCaso1();
 int validarInstruccionCaso1();
 
 int main(){
-  printf("**BioDex**\n\n");
+  printf("██████╗ ██╗ ██████╗ ██████╗ ███████╗██╗  ██╗\n");
+  printf("██╔══██╗██║██╔═══██╗██╔══██╗██╔════╝╚██╗██╔╝\n");
+  printf("██████╔╝██║██║   ██║██║  ██║█████╗   ╚███╔╝ \n");
+  printf("██╔══██╗██║██║   ██║██║  ██║██╔══╝   ██╔██╗ \n");
+  printf("██████╔╝██║╚██████╔╝██████╔╝███████╗██╔╝ ██╗\n");
+  printf("╚═════╝ ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝\n\n");
   printf("Bienvenido al BioDex, el lugar donde podrás encontrar información sobre animales y vegetales en camino a la extinción.\n\n");
 
   int instruccion;
   do{
     mostrarOpcionesPrincipal(); // se mostraran todas las opciones disponibles en el menu principal 
     instruccion = validarInstruccion();
-    switchPrincipal(instruccion);
+    switchPrincipal(instruccion); // ingresar a opciones del menu principal
   }while(instruccion != 0);
   printf("\nGracias por utilizar Biodex...");
 
@@ -92,20 +98,21 @@ int validarInstruccion(){
   }  
 }
 
-void mostrarOpcionesPrincipal(){
-  
-  printf("(1) Si desea ver el catalogo de especies\n");
-  printf("(2) Si desea ver informacion detallada de algun animal o vegetal\n");
-  printf("(3) Si desea hacer una busqueda mas especifica \n");
-  printf("(4) Si desea guardar un animal o vegetal en especifico\n");
-  printf("(5) Si desea ver el historial de busquedad realizado\n");
+void mostrarOpcionesPrincipal()
+{
+  printf("(1) Buscar especies\n");
+  printf("(2) Ver informacion detallada de especies\n");
+  printf("(3) Favoritos \n");
+  printf("(4) Historial de búsqueda\n");
   printf("(0) si desea cerrar el programa\n");
 }
-// en el caso 2 y 3 creo que hay que cambiar la pregunta o algo, porque en el caso 2 hay que realizar el caso 3, por lo que tiene mas sentido eliminar el caso 2 y que este sea una opcion que se da despues se realizar la busqueda en el caso 3. Con la misma logica que lo escrito anteriormente, el caso 4 puede ser una opcion del caso 3 
-void switchPrincipal(int instruccion){
-  switch(instruccion){
-    case(1):
-      printf("");
+
+void switchPrincipal(int instruccion)
+{
+  switch(instruccion){ //se recibe la opcion entre 1 y 4 del menu principal 
+    case(1): // si es 1) buscar especie abre un submenu
+      //mostrar lista y submenu
+      printf("Escoja una opción: ");
       int instruccionCaso1;
       do{
         instruccionCaso1 = validarInstruccionCaso1();
@@ -113,21 +120,22 @@ void switchPrincipal(int instruccion){
       }while(instruccionCaso1 != 0);
       printf("\n");
       break;
-    case(2):
-      printf("ingrese el id del animal que desee obtener informacion\n");
+    case(2): // si es 2) ver especies abre un submenu
+      printf("\n");
       //int busqueda;
       //scanf("%d", busqueda); esta es una idea de como puede ser, para tener algo escrito, lo mas probable es que esto lo hagamos con algun TDA
       break;
-    case(3):
+    case(3): // si es 3) favoritos abre un submenu
+      printf("\n");
+      //int busqueda;
+      //scanf("%d", busqueda); esta es una idea de como puede ser, para tener algo escrito, lo mas probable es que esto lo hagamos con algun TDA
+      break;
+    case(4): // si es 4) historial abre un submenu
+      printf("\n");
+      //mostrar historial
+      break;
+    case(5): // si es 5) cerrar programa
       
-      printf("ingrese el id del animal que desee obtener informacion\n");
-      //int busqueda;
-      //scanf("%d", busqueda); esta es una idea de como puede ser, para tener algo escrito, lo mas probable es que esto lo hagamos con algun TDA
-      break;
-    case(4):
-      break;
-    case(5):
-      //historial();
       break;
   }
 
