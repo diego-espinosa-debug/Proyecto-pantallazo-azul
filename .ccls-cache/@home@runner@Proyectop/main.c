@@ -1,28 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "hashmap.h"
+#include "list.h"
+
 typedef struct animal{
+  int ID; //1
   char nombre[100];
   int numero;
   char especie[100];//herbivoro, carnivoro, omnivoro
-  char habitat[100];//terrestre, acuatico, aereo
-  char tipo[100];//mamifero, ave, reptil, anfibio, peces
+  char habitat[100];//terrestre, marino, aeroterrestre
+  char tipo[100];//mamifero, ave, reptil, anfibio, peces, insecto
   int peso;
-  char descripcion[1000];//necesidades que tengan los animales y porque están en camino a la extinción 
-//Exploración y Búsqueda. Se implementaran formas para que puedas buscar de manera específica el animal o vegetal que desee el usuario
-//Educación sobre especies. Se informará de manera breve sobre el animal y como el usuario podría contribuir para mantener a salvo esta especie
+  char descripcion[1000];//necesidades que tengan los animales y porque están en camino a la extinción. Educación sobre especies. Se informará de manera breve sobre el animal y como el usuario podría contribuir para mantener a salvo esta especie
 }animal;
 
 typedef struct vegetal{
+  int ID; //2
   char nombre[100];
   int numero;
   char especie[100];//arbol, hongo
   char habitat[100];//acuatico, continental
-  char descripcion[1000];//necesidades que tengan los vegetales y porque están en camino a la extinción 
-//Exploración y Búsqueda. Se implementaran formas para que puedas buscar de manera específica el animal o vegetal que desee el usuario
-//Educación sobre especies. Se informará de manera breve sobre el vegetal y como el usuario podría contribuir para mantener a salvo esta especie
+  char descripcion[1000];//necesidades que tengan los vegetales y porque están en camino a la extinción Educación sobre especies. Se informará de manera breve sobre el vegetal y como el usuario podría contribuir para mantener a salvo esta especie
 }vegetal;
 
+void creacionMapas();
+void importarInfoBiodex(FILE *, FILE *, HashMap *,HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *);
 void mostrarOpcionesPrincipal();
 int validarInstruccion();
 void switchPrincipal(int);
@@ -32,48 +35,25 @@ int validarInstruccionCaso1();
 void switchCaso3(int);
 void mostrarOpcionesCaso3();
 int validarInstruccionCaso3();
+void switchCaso4(int);
+void mostrarOpcionesCaso4();
+int validarInstruccionCaso4();
+
 
 int main(){
-  printf("██████╗ ██╗ ██████╗ ██████╗ ███████╗██╗  ██╗\n");
-  printf("██╔══██╗██║██╔═══██╗██╔══██╗██╔════╝╚██╗██╔╝\n");
-  printf("██████╔╝██║██║   ██║██║  ██║█████╗   ╚███╔╝ \n");
-  printf("██╔══██╗██║██║   ██║██║  ██║██╔══╝   ██╔██╗ \n");
-  printf("██████╔╝██║╚██████╔╝██████╔╝███████╗██╔╝ ██╗\n");
-  printf("╚═════╝ ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝\n\n");
   printf("Bienvenido al BioDex, el lugar donde podrás encontrar información sobre animales y vegetales en camino a la extinción.\n\n");
-
-  int instruccion;
-  do{
-    mostrarOpcionesPrincipal(); // se mostraran todas las opciones disponibles en el menu principal 
-    instruccion = validarInstruccion();
-    switchPrincipal(instruccion); // ingresar a opciones del menu principal
-  }while(instruccion != 0);
-  printf("\nGracias por utilizar Biodex...");
-
-  
+  creacionMapas();
   //--------------------------------------------------------
   //hacer una funcion que importe un archivo con animales y vegetales, ingresarlos en memoria.
   //--------------------------------------------------------
-  //importarInfoBiodex();
-  
-  //luego ingresarlo en los distintos mapas creados a continuacion
-  
-  //---------------------------------------------
-  //mapas ordenados para los distintos catalogos
-  //---------------------------------------------
-
-  //animales
-  //herbivoro, carnivoro o omnivoro
-  //terrestre, acuatico o volador
-  //mamifero, ave, reptil, anfibio, peces
-
-  //vegetales
-  //arbol o hongo
-  //acuatico o continental
-
-  //---------------------------------------------------
-  //funcion para ingresar animales y vegetales en mapas
-  //---------------------------------------------------
+  void importarInfoBiodex(FILE * archivoAnimal, FILE * archivoVegetal, HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *mapaAnimal_Marinos, HashMap *mapaAnimal_Terrestres, HashMap *mapaAnimal_Aeroterrestres, HashMap *mapaAnimal_Carnivoros, HashMap *mapaAnimal_Herbivoros, HashMap *mapaAnimal_Omnivoros, HashMap *mapaVegetal_Arbol, HashMap *mapaVegetal_Plantas, HashMap *mapaVegetal_Hongos, HashMap *mapaVegetal_Acuatico, HashMap *mapaVegetal_Continentales);
+  int instruccion;
+  do{
+    mostrarOpcionesPrincipal(); // se mostraran todas las opciones disponibles en el menu principal 
+    instruccion = validarInstruccion(); //opcion usuario
+    switchPrincipal(instruccion); // ingresar a opciones del menu principal
+  }while(instruccion != 0); //mientras no se escoja opcion "cerrar programa"
+  printf("\nGracias por utilizar Biodex...");
   return EXIT_SUCCESS;
 }
 
@@ -103,11 +83,43 @@ int validarInstruccion(){
 
 void mostrarOpcionesPrincipal()
 {
-  printf("(1) Buscar especies\n");
-  printf("(2) Ver informacion detallada de especies\n");
+  printf("██████╗ ██╗ ██████╗ ██████╗ ███████╗██╗  ██╗\n");
+  printf("██╔══██╗██║██╔═══██╗██╔══██╗██╔════╝╚██╗██╔╝\n");
+  printf("██████╔╝██║██║   ██║██║  ██║█████╗   ╚███╔╝ \n");
+  printf("██╔══██╗██║██║   ██║██║  ██║██╔══╝   ██╔██╗ \n");
+  printf("██████╔╝██║╚██████╔╝██████╔╝███████╗██╔╝ ██╗\n");
+  printf("╚═════╝ ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝\n\n");
+  printf("(1) ver especies\n");
+  printf("(2) buscar informacion detallada de especies\n");
   printf("(3) Favoritos \n");
   printf("(4) Historial de búsqueda\n");
   printf("(0) si desea cerrar el programa\n");
+}
+
+void creacionMapas()
+{
+  //Crear HashMaps
+  HashMap * mapaAnimales = createMap(20);
+  HashMap * mapaVegetales = createMap(20);
+  HashMap * mapaAnimal_Marinos = createMap(100);
+  HashMap * mapaAnimal_Terrestres = createMap(100);
+  HashMap * mapaAnimal_Aeroterrestres = createMap(100);
+  HashMap * mapaAnimal_Carnivoros = createMap(100);
+  HashMap * mapaAnimal_Herbivoros = createMap(100);
+  HashMap * mapaAnimal_Omnivoros = createMap(100);
+  HashMap * mapaVegetal_Arbol = createMap(100);
+  HashMap * mapaVegetal_Plantas = createMap(100);
+  HashMap * mapaVegetal_Hongos = createMap(100);
+  HashMap * mapaVegetal_Acuatico = createMap(100);
+  HashMap * mapaVegetal_Continentales = createMap(100);
+  //Crear arbol binario
+}
+
+void importarInfoBiodex(FILE * archivoAnimal, FILE * archivoVegetal, HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *mapaAnimal_Marinos, HashMap *mapaAnimal_Terrestres, HashMap *mapaAnimal_Aeroterrestres, HashMap *mapaAnimal_Carnivoros, HashMap *mapaAnimal_Herbivoros, HashMap *mapaAnimal_Omnivoros, HashMap *mapaVegetal_Arbol, HashMap *mapaVegetal_Plantas, HashMap *mapaVegetal_Hongos, HashMap *mapaVegetal_Acuatico, HashMap *mapaVegetal_Continentales)
+{
+  //abrir y leer archivos
+
+  //ir guardando 
 }
 
 void switchPrincipal(int instruccion)
@@ -137,9 +149,14 @@ void switchPrincipal(int instruccion)
       }while(instruccionCaso3 != 0);
 
       break;
-    case(4): // 
+    case(4):
       printf("\n");
-      //mostrar historial
+      printf("Ingrese\n");
+      int instruccionCaso4;
+      do{
+        instruccionCaso4 = validarInstruccionCaso4();
+        switchCaso4(instruccionCaso4);
+      }while(instruccionCaso4 != 0);
       break;
     case(5): // si es 5) cerrar programa
 
@@ -249,6 +266,45 @@ void switchCaso3(int instruccionCaso1){
       break;
     case(3):
       //agregarFavoritos();
+      break;
+  }
+}
+int validarInstruccionCaso4(){
+  char aux[10];
+
+  while(1){
+    mostrarOpcionesCaso4();
+    if(scanf("%2s", aux) != 1){
+      printf("debe ingresar una opcion valida\n\n");
+      while(getchar() != '\n');
+    } else {
+        int instruccion;
+        if(strlen(aux) == 1 &&  aux[0] >= '0' && aux[0] <= '2'){
+        instruccion = atoi(aux);
+        while(getchar() != '\n');
+        if(instruccion == 0) return 0;
+        mostrarOpcionesCaso4();
+        return instruccion;
+      } else{
+          printf("debe ingresar una opcion valida\n\n");
+          while(getchar() != '\n');
+      }
+    }
+  }  
+}
+
+void mostrarOpcionesCaso4(){
+
+  printf("(1)Si desea ver el historial\n(2)Si desea borrar el historial\n(0)Si desea volver al menu principal\n\n");
+}
+
+void switchCaso4(int instruccionCaso1){
+  switch(instruccionCaso1){
+    case(1):
+      //mostrarHistorial();
+     break;
+    case(2):
+      //EliminarHistorial();
       break;
   }
 }
