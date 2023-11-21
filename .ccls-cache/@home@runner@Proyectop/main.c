@@ -16,7 +16,6 @@ typedef struct animal{
   char alimentacion[100];//herbivoro, carnivoro, omnivoro
   char habitat[100];//terrestre, marino, aeroterrestre
   char tipo[100];//mamifero, ave, reptil, anfibio, peces, insecto
-  char peso[10];
   char descripcion[500];//necesidades que tengan los animales y porque están en camino a la extinción. Educación sobre especies. Se informará de manera breve sobre el animal y como el usuario podría contribuir para mantener a salvo esta especie
 }animal;
 
@@ -24,6 +23,7 @@ typedef struct vegetal{
   int ID; //2
   char nombre[100];
   char numero;
+char nombreCientifico[100];
   char especie[100];//arbol, hongo
   char habitat[100];//acuatico, continental
   char descripcion[500];//necesidades que tengan los vegetales y porque están en camino a la extinción Educación sobre especies. Se informará de manera breve sobre el vegetal y como el usuario podría contribuir para mantener a salvo esta especie
