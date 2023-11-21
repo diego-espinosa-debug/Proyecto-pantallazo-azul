@@ -29,6 +29,9 @@ void switchPrincipal(int);
 void switchCaso1(int);
 void mostrarOpcionesCaso1();
 int validarInstruccionCaso1();
+void switchCaso3(int);
+void mostrarOpcionesCaso3();
+int validarInstruccionCaso3();
 
 int main(){
   printf("██████╗ ██╗ ██████╗ ██████╗ ███████╗██╗  ██╗\n");
@@ -122,24 +125,26 @@ void switchPrincipal(int instruccion)
       break;
     case(2): // si es 2) ver especies abre un submenu
       printf("\n");
-      //int busqueda;
-      //scanf("%d", busqueda); esta es una idea de como puede ser, para tener algo escrito, lo mas probable es que esto lo hagamos con algun TDA
+
       break;
     case(3): // si es 3) favoritos abre un submenu
       printf("\n");
-      //int busqueda;
-      //scanf("%d", busqueda); esta es una idea de como puede ser, para tener algo escrito, lo mas probable es que esto lo hagamos con algun TDA
+      printf("Ingrese\n");
+      int instruccionCaso3;
+      do{
+        instruccionCaso3 = validarInstruccionCaso3();
+        switchCaso3(instruccionCaso3);
+      }while(instruccionCaso3 != 0);
+
       break;
-    case(4): // si es 4) historial abre un submenu
+    case(4): // 
       printf("\n");
       //mostrar historial
       break;
     case(5): // si es 5) cerrar programa
-      
+
       break;
   }
-
-  
 }
 
 int validarInstruccionCaso1(){
@@ -153,15 +158,13 @@ int validarInstruccionCaso1(){
       while(getchar() != '\n');
     } else {
         int instruccion;
-        if(strlen(aux) == 1 &&  aux[0] >= '0' && aux[0] <= '8'){
+        if(strlen(aux) == 1 &&  aux[0] >= '0' && aux[0] <= '7'){
         instruccion = atoi(aux);
         while(getchar() != '\n');
         if(instruccion == 0) return 0;
-        mostrarOpcionesCaso1();
         return instruccion;
       } else{
           printf("debe ingresar una opcion valida\n\n");
-          mostrarOpcionesCaso1();
           while(getchar() != '\n');
       }
     }
@@ -169,14 +172,14 @@ int validarInstruccionCaso1(){
 }
 
 void mostrarOpcionesCaso1(){
-  
-  printf("(1) Si desea ver 50 animales en peligro de extinción\n");
-  printf("(2) Si desea ver 50 vegetales en peligro de extinción\n");
-  printf("(3) Si desea ver 50 animales terrestres en peligro de extinción\n");
-  printf("(4) Si desea ver 50 animales voladores en peligro de extinción\n");
-  printf("(5) Si desea ver 50 animales acuaticos en peligro de extinción\n");
-  printf("(6) Si desea ver 50 vegetales continentales en peligro de extinción\n");
-  printf("(7) Si desea ver 50 vegetales acuaticos en peligro de extinción\n");
+
+  printf("(1) Si desea ver animales en peligro de extinción\n");
+  printf("(2) Si desea ver vegetales en peligro de extinción\n");
+  printf("(3) Si desea ver animales terrestres en peligro de extinción\n");
+  printf("(4) Si desea ver animales voladores en peligro de extinción\n");
+  printf("(5) Si desea ver animales acuaticos en peligro de extinción\n");
+  printf("(6) Si desea ver vegetales continentales en peligro de extinción\n");
+  printf("(7) Si desea ver vegetales acuaticos en peligro de extinción\n");
   printf("(0) Si desea volver al menu principal\n");
 }
 
@@ -202,6 +205,50 @@ void switchCaso1(int instruccionCaso1){
      break;
     case(7):
       //mostrarVegetalesAcuaticos();
+      break;
+  }
+}
+
+
+int validarInstruccionCaso3(){
+  char aux[10];
+
+  while(1){
+    mostrarOpcionesCaso3();
+    if(scanf("%3s", aux) != 1){
+      printf("debe ingresar una opcion valida\n\n");
+      while(getchar() != '\n');
+    } else {
+        int instruccion;
+        if(strlen(aux) == 1 &&  aux[0] >= '0' && aux[0] <= '3'){
+        instruccion = atoi(aux);
+        while(getchar() != '\n');
+        if(instruccion == 0) return 0;
+        mostrarOpcionesCaso3();
+        return instruccion;
+      } else{
+          printf("debe ingresar una opcion valida\n\n");
+          while(getchar() != '\n');
+      }
+    }
+  }  
+}
+
+void mostrarOpcionesCaso3(){
+
+  printf("(1)Si desea mostrar los favoritos\n(2)Si desea eliminar algun favorito\n(3)Si desea guardar algun favorito\n(0)Si desea volver al menu principal\n");
+}
+
+void switchCaso3(int instruccionCaso1){
+  switch(instruccionCaso1){
+    case(1):
+      //mostrarFavoritos();
+     break;
+    case(2):
+      //EliminarFavoritos();
+      break;
+    case(3):
+      //agregarFavoritos();
       break;
   }
 }
