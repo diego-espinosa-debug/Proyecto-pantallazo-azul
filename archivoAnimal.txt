@@ -1,7 +1,0 @@
-Numero, Nombre, nombre cientifico, alimentacion, Habitat, Tipo, Descripcion
-
-001, Iguana azul de Gran Caimán, Cyclura lewisi, Terrestre, Reptil, la iguana azul de Gran Caimán se reproduce anualmente y pone de uno a 22 huevos dependiendo de la edad y el tamaño de la hembra. Las crías son vulnerables a las serpientes nativas y tienen una tasa de mortalidad muy alta. Darle ventaja a las crías durante los primeros dos años aumenta enormemente la supervivencia.
-002, Zarigüeya pigmea de montaña, Burramys parvus, Terrestre, Mamifero, El hábitat extremadamente restringido ha sido fragmentado o destruido por la construcción de carreteras, la construcción de presas/acueductos y el desarrollo de infraestructura para la industria del esquí alpino. Se prevé que la marginación y la pérdida de hábitat y la gravedad de la depredación aumentarán con el calentamiento global
-003, 
-004,
-005,

@@ -22,8 +22,8 @@ typedef struct animal{
 typedef struct vegetal{
   int ID; //2
   char nombre[100];
-  char numero;
-char nombreCientifico[100];
+  char numero[4];
+  char nombreCientifico[100];
   char especie[100];//arbol, hongo
   char habitat[100];//acuatico, continental
   char descripcion[500];//necesidades que tengan los vegetales y porque están en camino a la extinción Educación sobre especies. Se informará de manera breve sobre el vegetal y como el usuario podría contribuir para mantener a salvo esta especie
@@ -33,7 +33,7 @@ char nombreCientifico[100];
 //            Prototipo Funciones
 //--------------------------------------------------------------
 
-void creacionMapas();
+void CrearBiodex();
 const char *get_csv_field(char * , int );
 void importarInfoBiodex(HashMap *,HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *);
 void mostrarOpcionesPrincipal();
@@ -56,14 +56,13 @@ int validarInstruccionCaso4();
 int main()
 {
   printf("Bienvenido al BioDex, el lugar donde podrás encontrar información sobre animales y vegetales en camino a la extinción.\n\n");
-  //funcion que crea los mapas del programa
-  creacionMapas();
-  //funcion que importe un archivo con animales y vegetales, ingresarlos en memoria.
-  void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *mapaAnimal_Marinos, HashMap *mapaAnimal_Terrestres, HashMap *mapaAnimal_Aeroterrestres, HashMap *mapaAnimal_Carnivoros, HashMap *mapaAnimal_Herbivoros, HashMap *mapaAnimal_Omnivoros, HashMap *mapaVegetal_Arbol, HashMap *mapaVegetal_Plantas, HashMap *mapaVegetal_Hongos, HashMap *mapaVegetal_Acuatico, HashMap *mapaVegetal_Continentales);
-  int instruccion;
+  //funcion que crea los mapas del programa e importa la informacion de los archivos a los mapas
+  CrearBiodex();
+  
+  int instruccion; //opcion usuario
   do{
     mostrarOpcionesPrincipal();// se muestra todas las opciones del menu principal 
-    instruccion = validarInstruccion(); //opcion usuario
+    instruccion = validarInstruccion(); //validar opcion
     switchPrincipal(instruccion); // ingresar a opciones
   }while(instruccion != 0); //mientras no se escoja opcion "cerrar programa"
   printf("\nGracias por utilizar Biodex...");
@@ -113,7 +112,7 @@ void mostrarOpcionesPrincipal()
   printf("(0) si desea cerrar el programa\n");
 }
 
-void creacionMapas()
+void CrearBiodex()
 {
   //Crear HashMaps
   HashMap * mapaAnimales = createMap(20);
@@ -130,6 +129,9 @@ void creacionMapas()
   HashMap * mapaVegetal_Acuatico = createMap(100);
   HashMap * mapaVegetal_Continentales = createMap(100);
   //Crear arbol binario
+
+  //importar
+  importarInfoBiodex(mapaAnimales, mapaVegetales ,mapaAnimal_Marinos, mapaAnimal_Terrestres, mapaAnimal_Aeroterrestres, mapaAnimal_Carnivoros, mapaAnimal_Herbivoros, mapaAnimal_Omnivoros, mapaVegetal_Arbol, mapaVegetal_Plantas, mapaVegetal_Hongos, mapaVegetal_Acuatico, mapaVegetal_Continentales);
 }
 const char *get_csv_field(char * tmp, int k)
 {
@@ -171,7 +173,7 @@ const char *get_csv_field(char * tmp, int k)
 void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *mapaAnimal_Marinos, HashMap *mapaAnimal_Terrestres, HashMap *mapaAnimal_Aeroterrestres, HashMap *mapaAnimal_Carnivoros, HashMap *mapaAnimal_Herbivoros, HashMap *mapaAnimal_Omnivoros, HashMap *mapaVegetal_Arbol, HashMap *mapaVegetal_Plantas, HashMap *mapaVegetal_Hongos, HashMap *mapaVegetal_Acuatico, HashMap *mapaVegetal_Continentales)
 {
   //abrir y leer archivo Animal
-  char * archivoAnimal = "archivoAnimal.txt";
+  char * archivoAnimal = "archivoAnimal.csv";
   FILE *archivo = fopen(archivoAnimal, "r");
   if(archivo == NULL){
     printf("***No se pudo abrir el archivo***\n");
@@ -179,9 +181,9 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
   }
   
   //cadena para guardar la linea completa del archivo
-  char linea[1000];
-  fgets(linea, 1000, archivo); //lee primera linea
-  while (fgets(linea, 1000, archivo) != NULL) //lee linea
+  char lineaA[1000];
+  fgets(lineaA, 1000, archivo); //lee primera linea
+  while (fgets(lineaA, 1000, archivo) != NULL) //lee linea
     {
       //reservar memoria
       animal * nuevaEspecieAnimal = (animal *) malloc(sizeof(animal));
@@ -194,36 +196,95 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
       //leer: Numero, Nombre, nombre cientifico, alimentacion, Habitat, Tipo, Peso,
       for(int i = 0 ; i < 6 ; i++){
         nuevaEspecieAnimal->ID = 1;
-        char * aux = (char *) get_csv_field(linea, i);//se obtiene cadena hasta la coma
+        char * aux = (char *) get_csv_field(lineaA, i);//se obtiene cadena hasta la coma
         switch(i){
           case 0://Numero
             strcpy(nuevaEspecieAnimal->numero, aux);
+            printf("num: %s\n", nuevaEspecieAnimal->numero);
             break;
           case 1://Nombre
             strcpy(nuevaEspecieAnimal->nombre, aux);
+            printf("Nombre: %s\n", nuevaEspecieAnimal->nombre);
             break;
           case 2://nombreCientifico
             strcpy(nuevaEspecieAnimal->nombreCientifico, aux);
+            printf("Nombre Cientifico: %s\n", nuevaEspecieAnimal->nombreCientifico);
             break;
           case 3://alimentacion
             strcpy(nuevaEspecieAnimal->alimentacion, aux);
+            printf("Alimentacion: %s\n", nuevaEspecieAnimal->alimentacion);
             break;
           case 4://Habitat
             strcpy(nuevaEspecieAnimal->habitat, aux);
+            printf("Habitat: %s\n", nuevaEspecieAnimal->habitat);
             break;
           case 5://Tipo
             strcpy(nuevaEspecieAnimal->tipo, aux);
+            printf("Tipo: %s\n", nuevaEspecieAnimal->tipo);
             break;
         }
       }
       //leer: Descripcion
-      //nuevaEspecieAnimal->descripcion = ;//leer hasta el salto de linea
+      strcpy(nuevaEspecieAnimal->descripcion, lineaA);//leer hasta el salto de linea
+      printf("Descripcion: %s\n", nuevaEspecieAnimal->descripcion);
+      //ir guardando en el mapa
     }
-  //ir guardando 
+  fclose(archivo);
+  /*
+  //-----------------
+  //archivo Vegetales
+  //-----------------
+  
+  char * archivoVegetal = "archivoVegetal.csv";
+  FILE *archivo2 = fopen(archivoVegetal, "r");
+  if(archivo2 == NULL){
+    printf("***No se pudo abrir el archivo***\n");
+    return;
+  }
+  //cadena para guardar la linea completa del archivo
+  char lineaV[1000];
+  fgets(lineaV, 1000, archivo2); //lee primera linea
+  while (fgets(lineaA, 1000, archivo) != NULL) //lee linea
+    {
+      //reservar memoria
+      vegetal * nuevaEspecieVegetal = (vegetal *) malloc(sizeof(vegetal));
+      //validacion memoria
+      if(nuevaEspecieVegetal == NULL){
+        printf("Error en el programa. Lo sentimos mucho, espere un momento o intentelo nuevamente.\n");
+        exit(EXIT_FAILURE);
+      }
+      //--------------------------------------------------
+      //leer: Numero, Nombre, Nombre científico, Habitat, Especie, 
+      for(int i = 0 ; i < 5 ; i++){
+        nuevaEspecieVegetal->ID = 2;
+        char * aux2 = (char *) get_csv_field(lineaV, i);//se obtiene cadena hasta la coma
+        switch(i){
+          case 0://Numero
+            strcpy(nuevaEspecieVegetal->numero, aux2);
+            break;
+          case 1://Nombre
+            strcpy(nuevaEspecieVegetal->nombre, aux2);
+            break;
+          case 2://nombreCientifico
+            strcpy(nuevaEspecieVegetal->nombreCientifico, aux2);
+            break;
+          case 3://Habitat
+            strcpy(nuevaEspecieVegetal->habitat, aux2);
+            break;
+          case 4://especie
+            strcpy(nuevaEspecieVegetal->especie, aux2);
+            break;
+        }
+     }
+    //leer: Descripcion
+    //nuevaEspecieVegetal->descripcion = ;//leer hasta el salto de linea
+
+    //ir guardando en el mapa
+  }
+  fclose(archivo2);*/
 }
 
-void switchPrincipal(int instruccion)
-{
+void switchPrincipal(int instruccion){
   switch(instruccion){ //se recibe la opcion entre 1 y 4 del menu principal 
     case(1): // si es 1) buscar especie abre un submenu
       //mostrar lista y submenu
@@ -326,7 +387,6 @@ void switchCaso1(int instruccionCaso1){
   }
 }
 
-
 int validarInstruccionCaso3(){
   char aux[10];
 
@@ -369,6 +429,7 @@ void switchCaso3(int instruccionCaso1){
       break;
   }
 }
+
 int validarInstruccionCaso4(){
   char aux[10];
 
