@@ -69,3 +69,6 @@ case(3):
     //EliminarHistorial();
     break;
 
+darik:
+
+cosas a arreglar, que se lean las especies del hashmap en la opcion 1, solo lee el mismo en vez de avanzar cuando implemento la funcion nextMap()

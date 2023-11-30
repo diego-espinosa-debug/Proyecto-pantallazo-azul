@@ -3,7 +3,7 @@
 #include <string.h>
 #include "hashmap.h"
 #include "list.h"
-
+#include "treemap.h"
 //---------------------------------------------------------
 //                estructuras
 //---------------------------------------------------------
@@ -24,7 +24,7 @@ typedef struct vegetal{
   char nombre[100];
   char numero[4];
   char nombreCientifico[100];
-  char especie[100];//arbol, hongo
+  char especie[100];//arbol, hongo, planta
   char habitat[100];//acuatico, continental
   char descripcion[500];//necesidades que tengan los vegetales y porque están en camino a la extinción Educación sobre especies. Se informará de manera breve sobre el vegetal y como el usuario podría contribuir para mantener a salvo esta especie
 }vegetal;
@@ -33,13 +33,14 @@ typedef struct vegetal{
 //            Prototipo Funciones
 //--------------------------------------------------------------
 
-void CrearBiodex();
+//void CrearBiodex();
 const char *get_csv_field(char * , int );
 void importarInfoBiodex(HashMap *,HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *);
 void mostrarOpcionesPrincipal();
 int validarInstruccion();
-void switchPrincipal(int);
-void switchCaso1(int);
+void switchPrincipal(int,HashMap *,HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *);
+void switchCaso1(int, HashMap *,HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *, HashMap *);
+
 void mostrarOpcionesCaso1();
 int validarInstruccionCaso1();
 void switchCaso3(int);
@@ -48,6 +49,7 @@ int validarInstruccionCaso3();
 void switchCaso4(int);
 void mostrarOpcionesCaso4();
 int validarInstruccionCaso4();
+int lower_than_int(void *, void *);
 
 //----------------------------------------------------------
 //             Main principal
@@ -57,13 +59,28 @@ int main()
 {
   printf("Bienvenido al BioDex, el lugar donde podrás encontrar información sobre animales y vegetales en camino a la extinción.\n\n");
   //funcion que crea los mapas del programa e importa la informacion de los archivos a los mapas
-  CrearBiodex();
+  //CrearBiodex();
+  HashMap * Animales = createMap(20);
+  HashMap * Vegetales = createMap(20);
+  HashMap * Ani_Marinos = createMap(100);
+  HashMap * Ani_Terrestres = createMap(100);
+  HashMap * Ani_Aeroterrestres = createMap(100);
+  HashMap * Ani_Carnivoros = createMap(100);
+  HashMap * Ani_Herbivoros = createMap(100);
+  HashMap * Ani_Omnivoros = createMap(100);
+  HashMap * Veg_Arbol = createMap(100);
+  HashMap * Veg_Plantas = createMap(100);
+  HashMap * Veg_Hongos = createMap(100);
+  HashMap * Veg_Acuatico = createMap(100);
+  HashMap * Veg_Continentales = createMap(100);
+  TreeMap * BinarioGeneral = createTreeMap(lower_than_int);
   
+  importarInfoBiodex(Animales, Vegetales, Ani_Marinos, Ani_Terrestres, Ani_Aeroterrestres, Ani_Carnivoros, Ani_Herbivoros, Ani_Omnivoros, Veg_Arbol, Veg_Plantas, Veg_Hongos, Veg_Acuatico, Veg_Continentales);
   int instruccion; //opcion usuario
   do{
     mostrarOpcionesPrincipal();// se muestra todas las opciones del menu principal 
     instruccion = validarInstruccion(); //validar opcion
-    switchPrincipal(instruccion); // ingresar a opciones
+    switchPrincipal(instruccion,Animales, Vegetales, Ani_Marinos, Ani_Terrestres, Ani_Aeroterrestres, Ani_Carnivoros, Ani_Herbivoros, Ani_Omnivoros, Veg_Arbol, Veg_Plantas, Veg_Hongos, Veg_Acuatico, Veg_Continentales); // ingresar a opciones
   }while(instruccion != 0); //mientras no se escoja opcion "cerrar programa"
   printf("\nGracias por utilizar Biodex...");
   return EXIT_SUCCESS;
@@ -72,6 +89,12 @@ int main()
 //------------------------------------------------------------
 //                Funciones
 //-----------------------------------------------------------
+
+int lower_than_int(void* key1, void* key2){
+    int k1 = *((int*) (key1));
+    int k2 = *((int*) (key2));
+    return k1<k2;
+}
 
 int validarInstruccion(){
   char aux[10];
@@ -112,27 +135,6 @@ void mostrarOpcionesPrincipal()
   printf("(0) Si desea cerrar el programa\n");
 }
 
-void CrearBiodex()
-{
-  //Crear HashMaps
-  HashMap * mapaAnimales = createMap(20);
-  HashMap * mapaVegetales = createMap(20);
-  HashMap * mapaAnimal_Marinos = createMap(100);
-  HashMap * mapaAnimal_Terrestres = createMap(100);
-  HashMap * mapaAnimal_Aeroterrestres = createMap(100);
-  HashMap * mapaAnimal_Carnivoros = createMap(100);
-  HashMap * mapaAnimal_Herbivoros = createMap(100);
-  HashMap * mapaAnimal_Omnivoros = createMap(100);
-  HashMap * mapaVegetal_Arbol = createMap(100);
-  HashMap * mapaVegetal_Plantas = createMap(100);
-  HashMap * mapaVegetal_Hongos = createMap(100);
-  HashMap * mapaVegetal_Acuatico = createMap(100);
-  HashMap * mapaVegetal_Continentales = createMap(100);
-  //Crear arbol binario
-
-  //importar
-  importarInfoBiodex(mapaAnimales, mapaVegetales ,mapaAnimal_Marinos, mapaAnimal_Terrestres, mapaAnimal_Aeroterrestres, mapaAnimal_Carnivoros, mapaAnimal_Herbivoros, mapaAnimal_Omnivoros, mapaVegetal_Arbol, mapaVegetal_Plantas, mapaVegetal_Hongos, mapaVegetal_Acuatico, mapaVegetal_Continentales);
-}
 const char *get_csv_field(char * tmp, int k)
 {
   int open_mark = 0;
@@ -200,7 +202,8 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
         switch(i){
           case 0://Numero
             strcpy(nuevaEspecieAnimal->numero, aux);
-            printf("num: %s\n", nuevaEspecieAnimal->numero);
+            //printf("num: %s\n", nuevaEspecieAnimal->numero);
+            
             break;
           case 1://Nombre
             strcpy(nuevaEspecieAnimal->nombre, aux);
@@ -229,6 +232,19 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
             break;
         }
       }
+      insertMap(mapaAnimales, nuevaEspecieAnimal->numero, nuevaEspecieAnimal);
+      if(strcmp(nuevaEspecieAnimal->alimentacion, "Herbivoro") == 0){ 
+        insertMap(mapaAnimal_Herbivoros, nuevaEspecieAnimal->numero, nuevaEspecieAnimal);
+      }else if(strcmp(nuevaEspecieAnimal->alimentacion, "Carnivoro") == 0){ 
+        insertMap(mapaAnimal_Carnivoros, nuevaEspecieAnimal->numero, nuevaEspecieAnimal);
+      }else if(strcmp(nuevaEspecieAnimal->alimentacion, "Omnivoro") == 0) insertMap(mapaAnimal_Omnivoros, nuevaEspecieAnimal->numero, nuevaEspecieAnimal);
+
+      
+      if(strcmp(nuevaEspecieAnimal->habitat, "Marino") == 0){
+        insertMap(mapaAnimal_Marinos, nuevaEspecieAnimal->numero, nuevaEspecieAnimal);
+      }else if(strcmp(nuevaEspecieAnimal->habitat, "Terrestre") == 0) {
+        insertMap(mapaAnimal_Terrestres, nuevaEspecieAnimal->numero, nuevaEspecieAnimal);
+      }else if(strcmp(nuevaEspecieAnimal->habitat, "Aeroterrestre") == 0) insertMap(mapaAnimal_Aeroterrestres, nuevaEspecieAnimal->numero, nuevaEspecieAnimal);
       
     }
   fclose(archivo);
@@ -267,7 +283,7 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
             break;
           case 1://Nombre
             strcpy(nuevaEspecieVegetal->nombre, aux2);
-            //printf("Nombre: %s\n", nuevaEspecieVegetal->nombre);
+            printf("Nombre: %s\n", nuevaEspecieVegetal->nombre);
             break;
           case 2://nombreCientifico
             strcpy(nuevaEspecieVegetal->nombreCientifico, aux2);
@@ -287,15 +303,23 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
             break;
         }
      }
-    //leer: Descripcion
-    //nuevaEspecieVegetal->descripcion = ;//leer hasta el salto de linea
-
     //ir guardando en el mapa
+    insertMap(mapaVegetales, nuevaEspecieVegetal->numero, nuevaEspecieVegetal);
+    if(strcmp(nuevaEspecieVegetal->habitat, "Acuatico") == 0){
+      insertMap(mapaVegetal_Acuatico, nuevaEspecieVegetal->numero, nuevaEspecieVegetal);
+    }else if(strcmp(nuevaEspecieVegetal->habitat, "Continental") == 0)
+      insertMap(mapaVegetal_Continentales, nuevaEspecieVegetal->numero, nuevaEspecieVegetal);
+
+    if(strcmp(nuevaEspecieVegetal->especie, "Arbol") == 0){
+      insertMap(mapaVegetal_Arbol, nuevaEspecieVegetal->numero, nuevaEspecieVegetal);
+    }else if(strcmp(nuevaEspecieVegetal->especie, "Planta") == 0){
+      insertMap(mapaVegetal_Plantas, nuevaEspecieVegetal->numero, nuevaEspecieVegetal);
+    }else if(strcmp(nuevaEspecieVegetal->especie, "Hongo") == 0) insertMap(mapaVegetal_Hongos, nuevaEspecieVegetal->numero, nuevaEspecieVegetal);
   }
   fclose(archivo2);
 }
 
-void switchPrincipal(int instruccion){
+void switchPrincipal(int instruccion,HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *mapaAnimal_Marinos, HashMap *mapaAnimal_Terrestres, HashMap *mapaAnimal_Aeroterrestres, HashMap *mapaAnimal_Carnivoros, HashMap *mapaAnimal_Herbivoros, HashMap *mapaAnimal_Omnivoros, HashMap *mapaVegetal_Arbol, HashMap *mapaVegetal_Plantas, HashMap *mapaVegetal_Hongos, HashMap *mapaVegetal_Acuatico, HashMap *mapaVegetal_Continentales){
   switch(instruccion){ //se recibe la opcion entre 1 y 4 del menu principal 
     case(1): // si es 1) buscar especie abre un submenu
       //mostrar lista y submenu
@@ -303,7 +327,7 @@ void switchPrincipal(int instruccion){
       int instruccionCaso1;
       do{
         instruccionCaso1 = validarInstruccionCaso1();
-        switchCaso1(instruccionCaso1);
+        switchCaso1(instruccionCaso1, mapaAnimales, mapaVegetales, mapaAnimal_Marinos, mapaAnimal_Terrestres, mapaAnimal_Aeroterrestres, mapaAnimal_Carnivoros, mapaAnimal_Herbivoros, mapaAnimal_Omnivoros, mapaVegetal_Arbol, mapaVegetal_Plantas, mapaVegetal_Hongos, mapaVegetal_Acuatico, mapaVegetal_Continentales);
       }while(instruccionCaso1 != 0);
       printf("\n");
       break;
@@ -372,27 +396,281 @@ void mostrarOpcionesCaso1(){
   printf("(0) Si desea volver al menu principal\n");
 }
 
-void switchCaso1(int instruccionCaso1){
+int verMas(){
+  printf("(1)Si desea ver mas especies\n(0)si desea volver al menu principal\n");
+  int instruccion;
+  
+  do{
+    scanf("%d", &instruccion);
+  }while(instruccion!=1 || instruccion!=0);
+  return instruccion;
+}
+
+void switchCaso1(int instruccionCaso1,HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *mapaAnimal_Marinos, HashMap *mapaAnimal_Terrestres, HashMap *mapaAnimal_Aeroterrestres, HashMap *mapaAnimal_Carnivoros, HashMap *mapaAnimal_Herbivoros, HashMap *mapaAnimal_Omnivoros, HashMap *mapaVegetal_Arbol, HashMap *mapaVegetal_Plantas, HashMap *mapaVegetal_Hongos, HashMap *mapaVegetal_Acuatico, HashMap *mapaVegetal_Continentales){
+  Pair * dato;
   switch(instruccionCaso1){
+    case 0:
+      return;
     case(1):
       //mostrarAnimalesPeligro();
-     break;
+      printf("--------------\n");
+      printf("Ver *Animales*\n");
+      printf("--------------\n\n");
+      dato = firstMap(mapaAnimales);
+      while(1)
+        {
+          if(dato == NULL){
+            printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n\n");
+            break;
+          }
+          
+          for(int i = 0; i < 3; i++){
+            animal * especie = dato->value;
+            
+            printf("-Numero: %s\n", especie->numero);
+            printf("-Nombre: %s\n", especie->nombre);
+            //printf("-Nombre cinetifico: %s\n", especie->nombreCientifico);
+            //printf("-Tipo: %s\n", especie->tipo);
+            //printf("-Habitat: %s\n", especie->habitat);
+            //printf("-Alimentacion: %s\n", especie->alimentacion);
+            //printf("-Mas sobre la especie: %s\n***\n", especie->descripcion);
+            dato = nextMap(mapaAnimales);
+            if(dato == NULL) break;
+          }
+          if(dato == NULL){
+            printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n");
+            return;
+          }
+          int opcionUsuario;
+          printf("\n(1)Si desea ver mas especies\n(0)si desea volver al menu principal\n");
+          printf("Opcion: ");
+          scanf("%d", &opcionUsuario);
+          if(opcionUsuario == 0) return;
+          
+        }
+      break;
     case(2):
-      //mostrarVegetalesPerigro();
+      printf("--------------\n");
+      printf("Ver *flora*\n");
+      printf("--------------\n\n");
+      dato = firstMap(mapaVegetales);
+      while(1)
+        {
+          if(dato == NULL){
+            printf("\nNo hay mas flora en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n\n");
+            break;
+          }
+
+          for(int i = 0; i < 3; i++){
+            animal * especie = dato->value;
+            printf("-Numero: %s\n", especie->numero);
+            printf("-Nombre: %s\n", especie->nombre);
+            //printf("-Nombre cinetifico: %s\n", especie->nombreCientifico);
+            //printf("-Tipo: %s\n", especie->tipo);
+            //printf("-Habitat: %s\n", especie->habitat);
+            //printf("-Alimentacion: %s\n", especie->alimentacion);
+            //printf("-Mas sobre la especie: %s\n***\n", especie->descripcion);
+            dato = nextMap(mapaVegetales);
+            if(dato == NULL) break;
+          }
+            if(dato == NULL){
+              printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n");
+              return;
+            }
+          int opcionUsuario;
+          printf("\n(1)Si desea ver mas especies\n(0)si desea volver al menu principal\n");
+          printf("Opcion: ");
+          scanf("%d", &opcionUsuario);
+          if(opcionUsuario == 0) return;
+          dato = nextMap(mapaVegetales);
+        }
       break;
     case(3):
+      printf("--------------\n");
+      printf("Ver *Animales*\n");
+      printf("--------------\n\n");
+      dato = firstMap(mapaAnimales);
+      while(1)
+        {
+          if(dato == NULL){
+            printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n\n");
+            break;
+          }
+
+          for(int i = 0; i < 3; i++){
+            animal * especie = dato->value;
+
+            printf("-Numero: %s\n", especie->numero);
+            printf("-Nombre: %s\n", especie->nombre);
+            //printf("-Nombre cinetifico: %s\n", especie->nombreCientifico);
+            //printf("-Tipo: %s\n", especie->tipo);
+            //printf("-Habitat: %s\n", especie->habitat);
+            //printf("-Alimentacion: %s\n", especie->alimentacion);
+            //printf("-Mas sobre la especie: %s\n***\n", especie->descripcion);
+            dato = nextMap(mapaAnimales);
+            if(dato == NULL) break;
+          }
+          if(dato == NULL){
+            printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n");
+            return;
+          }
+          int opcionUsuario;
+          printf("\n(1)Si desea ver mas especies\n(0)si desea volver al menu principal\n");
+          printf("Opcion: ");
+          scanf("%d", &opcionUsuario);
+          if(opcionUsuario == 0) return;
+
+        }
       //mostrarAnimalesTerrestres();
      break;
     case(4):
+      printf("--------------\n");
+      printf("Ver *Animales*\n");
+      printf("--------------\n\n");
+      dato = firstMap(mapaAnimales);
+      while(1)
+        {
+          if(dato == NULL){
+            printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n\n");
+            break;
+          }
+
+          for(int i = 0; i < 3; i++){
+            animal * especie = dato->value;
+
+            printf("-Numero: %s\n", especie->numero);
+            printf("-Nombre: %s\n", especie->nombre);
+            //printf("-Nombre cinetifico: %s\n", especie->nombreCientifico);
+            //printf("-Tipo: %s\n", especie->tipo);
+            //printf("-Habitat: %s\n", especie->habitat);
+            //printf("-Alimentacion: %s\n", especie->alimentacion);
+            //printf("-Mas sobre la especie: %s\n***\n", especie->descripcion);
+            dato = nextMap(mapaAnimales);
+            if(dato == NULL) break;
+          }
+          if(dato == NULL){
+            printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n");
+            return;
+          }
+          int opcionUsuario;
+          printf("\n(1)Si desea ver mas especies\n(0)si desea volver al menu principal\n");
+          printf("Opcion: ");
+          scanf("%d", &opcionUsuario);
+          if(opcionUsuario == 0) return;
+
+        }
       //mostrarAnimalesVoladores();
      break;
     case(5):
+      printf("--------------\n");
+      printf("Ver *Animales*\n");
+      printf("--------------\n\n");
+      dato = firstMap(mapaAnimales);
+      while(1)
+        {
+          if(dato == NULL){
+            printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n\n");
+            break;
+          }
+
+          for(int i = 0; i < 3; i++){
+            animal * especie = dato->value;
+
+            printf("-Numero: %s\n", especie->numero);
+            printf("-Nombre: %s\n", especie->nombre);
+            //printf("-Nombre cinetifico: %s\n", especie->nombreCientifico);
+            //printf("-Tipo: %s\n", especie->tipo);
+            //printf("-Habitat: %s\n", especie->habitat);
+            //printf("-Alimentacion: %s\n", especie->alimentacion);
+            //printf("-Mas sobre la especie: %s\n***\n", especie->descripcion);
+            dato = nextMap(mapaAnimales);
+            if(dato == NULL) break;
+          }
+          if(dato == NULL){
+            printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n");
+            return;
+          }
+          int opcionUsuario;
+          printf("\n(1)Si desea ver mas especies\n(0)si desea volver al menu principal\n");
+          printf("Opcion: ");
+          scanf("%d", &opcionUsuario);
+          if(opcionUsuario == 0) return;
+
+        }
       //mostrarAnimalesAcuaticos();
      break;
     case(6):
+      printf("--------------\n");
+      printf("Ver *flora*\n");
+      printf("--------------\n\n");
+      dato = firstMap(mapaVegetales);
+      while(1)
+        {
+          if(dato == NULL){
+            printf("\nNo hay mas flora en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n\n");
+            break;
+          }
+
+          for(int i = 0; i < 3; i++){
+            animal * especie = dato->value;
+            printf("-Numero: %s\n", especie->numero);
+            printf("-Nombre: %s\n", especie->nombre);
+            //printf("-Nombre cinetifico: %s\n", especie->nombreCientifico);
+            //printf("-Tipo: %s\n", especie->tipo);
+            //printf("-Habitat: %s\n", especie->habitat);
+            //printf("-Alimentacion: %s\n", especie->alimentacion);
+            //printf("-Mas sobre la especie: %s\n***\n", especie->descripcion);
+            dato = nextMap(mapaVegetales);
+            if(dato == NULL) break;
+          }
+            if(dato == NULL){
+              printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n");
+              return;
+            }
+          int opcionUsuario;
+          printf("\n(1)Si desea ver mas especies\n(0)si desea volver al menu principal\n");
+          printf("Opcion: ");
+          scanf("%d", &opcionUsuario);
+          if(opcionUsuario == 0) return;
+          dato = nextMap(mapaVegetales);
+        }
       //mostrarVegetalesContinentes();
      break;
     case(7):
+      printf("--------------\n");
+      printf("Ver *flora*\n");
+      printf("--------------\n\n");
+      dato = firstMap(mapaVegetales);
+      while(1)
+        {
+          if(dato == NULL){
+            printf("\nNo hay mas flora en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n\n");
+            break;
+          }
+
+          for(int i = 0; i < 3; i++){
+            animal * especie = dato->value;
+            printf("-Numero: %s\n", especie->numero);
+            printf("-Nombre: %s\n", especie->nombre);
+            //printf("-Nombre cinetifico: %s\n", especie->nombreCientifico);
+            //printf("-Tipo: %s\n", especie->tipo);
+            //printf("-Habitat: %s\n", especie->habitat);
+            //printf("-Alimentacion: %s\n", especie->alimentacion);
+            //printf("-Mas sobre la especie: %s\n***\n", especie->descripcion);
+            dato = nextMap(mapaVegetales);
+            if(dato == NULL) break;
+          }
+            if(dato == NULL){
+              printf("\nNo hay mas animales en peligro de extincion de este catalogo, pero puede conocer mas acerca de otros.\n");
+              return;
+            }
+          int opcionUsuario;
+          printf("\n(1)Si desea ver mas especies\n(0)si desea volver al menu principal\n");
+          printf("Opcion: ");
+          scanf("%d", &opcionUsuario);
+          if(opcionUsuario == 0) return;
+          dato = nextMap(mapaVegetales);
+        }
       //mostrarVegetalesAcuaticos();
       break;
   }
