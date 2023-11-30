@@ -105,11 +105,11 @@ void mostrarOpcionesPrincipal()
   printf("██╔══██╗██║██║   ██║██║  ██║██╔══╝   ██╔██╗ \n");
   printf("██████╔╝██║╚██████╔╝██████╔╝███████╗██╔╝ ██╗\n");
   printf("╚═════╝ ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝\n\n");
-  printf("(1) ver especies\n");
-  printf("(2) buscar informacion detallada de especies\n");
+  printf("(1) Ver especies\n");
+  printf("(2) Buscar informacion detallada de especies\n");
   printf("(3) Favoritos \n");
   printf("(4) Historial de búsqueda\n");
-  printf("(0) si desea cerrar el programa\n");
+  printf("(0) Si desea cerrar el programa\n");
 }
 
 void CrearBiodex()
@@ -147,12 +147,12 @@ const char *get_csv_field(char * tmp, int k)
       i++;
       continue;
     }
-    if(open_mark || tmp[i] != ','){
+    if(open_mark || tmp[i] != ';'){
       if(k==j) ret[i-ini_i] = tmp[i];
       i++;
       continue;
     }
-    if(tmp[i]==','){
+    if(tmp[i]==';'){
       if(k==j){
         ret[i-ini_i] = 0;
         return ret;
@@ -194,8 +194,8 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
       }
       //--------------------------------------------------
       //leer: Numero, Nombre, nombre cientifico, alimentacion, Habitat, Tipo, Peso,
-      for(int i = 0 ; i < 6 ; i++){
-        nuevaEspecieAnimal->ID = 1;
+      nuevaEspecieAnimal->ID = 1;
+      for(int i = 0 ; i < 7 ; i++){
         char * aux = (char *) get_csv_field(lineaA, i);//se obtiene cadena hasta la coma
         switch(i){
           case 0://Numero
@@ -204,33 +204,35 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
             break;
           case 1://Nombre
             strcpy(nuevaEspecieAnimal->nombre, aux);
-            printf("Nombre: %s\n", nuevaEspecieAnimal->nombre);
+            //printf("Nombre: %s\n", nuevaEspecieAnimal->nombre);
             break;
           case 2://nombreCientifico
             strcpy(nuevaEspecieAnimal->nombreCientifico, aux);
-            printf("Nombre Cientifico: %s\n", nuevaEspecieAnimal->nombreCientifico);
+            //printf("Nombre Cientifico: %s\n", nuevaEspecieAnimal->nombreCientifico);
             break;
           case 3://alimentacion
             strcpy(nuevaEspecieAnimal->alimentacion, aux);
-            printf("Alimentacion: %s\n", nuevaEspecieAnimal->alimentacion);
+            //printf("Alimentacion: %s\n", nuevaEspecieAnimal->alimentacion);
             break;
           case 4://Habitat
             strcpy(nuevaEspecieAnimal->habitat, aux);
-            printf("Habitat: %s\n", nuevaEspecieAnimal->habitat);
+            //printf("Habitat: %s\n", nuevaEspecieAnimal->habitat);
             break;
           case 5://Tipo
             strcpy(nuevaEspecieAnimal->tipo, aux);
-            printf("Tipo: %s\n", nuevaEspecieAnimal->tipo);
+            //printf("Tipo: %s\n", nuevaEspecieAnimal->tipo);
+            break;
+          case 6:
+          // Encuentra la posición de la coma
+            strcpy(nuevaEspecieAnimal->descripcion, aux);//leer hasta el salto de linea
+            //printf("Descripcion: %s\n", nuevaEspecieAnimal->descripcion);
             break;
         }
       }
-      //leer: Descripcion
-      strcpy(nuevaEspecieAnimal->descripcion, lineaA);//leer hasta el salto de linea
-      printf("Descripcion: %s\n", nuevaEspecieAnimal->descripcion);
-      //ir guardando en el mapa
+      
     }
   fclose(archivo);
-  /*
+  
   //-----------------
   //archivo Vegetales
   //-----------------
@@ -244,7 +246,7 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
   //cadena para guardar la linea completa del archivo
   char lineaV[1000];
   fgets(lineaV, 1000, archivo2); //lee primera linea
-  while (fgets(lineaA, 1000, archivo) != NULL) //lee linea
+  while (fgets(lineaV, 1000, archivo2) != NULL) //lee linea
     {
       //reservar memoria
       vegetal * nuevaEspecieVegetal = (vegetal *) malloc(sizeof(vegetal));
@@ -255,24 +257,33 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
       }
       //--------------------------------------------------
       //leer: Numero, Nombre, Nombre científico, Habitat, Especie, 
-      for(int i = 0 ; i < 5 ; i++){
+      for(int i = 0 ; i < 6 ; i++){
         nuevaEspecieVegetal->ID = 2;
         char * aux2 = (char *) get_csv_field(lineaV, i);//se obtiene cadena hasta la coma
         switch(i){
           case 0://Numero
             strcpy(nuevaEspecieVegetal->numero, aux2);
+            printf("num: %s\n", nuevaEspecieVegetal->numero);
             break;
           case 1://Nombre
             strcpy(nuevaEspecieVegetal->nombre, aux2);
+            //printf("Nombre: %s\n", nuevaEspecieVegetal->nombre);
             break;
           case 2://nombreCientifico
             strcpy(nuevaEspecieVegetal->nombreCientifico, aux2);
+            //printf("Nombre Cientifico: %s\n", nuevaEspecieVegetal->nombreCientifico);
             break;
           case 3://Habitat
             strcpy(nuevaEspecieVegetal->habitat, aux2);
+            //printf("Habitat: %s\n", nuevaEspecieVegetal->habitat);
             break;
           case 4://especie
             strcpy(nuevaEspecieVegetal->especie, aux2);
+            //printf("Especie: %s\n", nuevaEspecieVegetal->especie);
+            break;
+          case 5:
+            strcpy(nuevaEspecieVegetal->descripcion, aux2);
+            //printf("Descripcion: %s\n", nuevaEspecieVegetal->descripcion);
             break;
         }
      }
@@ -281,7 +292,7 @@ void importarInfoBiodex(HashMap * mapaAnimales,HashMap *mapaVegetales, HashMap *
 
     //ir guardando en el mapa
   }
-  fclose(archivo2);*/
+  fclose(archivo2);
 }
 
 void switchPrincipal(int instruccion){
@@ -413,7 +424,10 @@ int validarInstruccionCaso3(){
 
 void mostrarOpcionesCaso3(){
 
-  printf("(1)Si desea mostrar los favoritos\n(2)Si desea eliminar algun favorito\n(3)Si desea guardar algun favorito\n(0)Si desea volver al menu principal\n");
+  printf("(1)Si desea mostrar los favoritos\n");
+  printf("(2)Si desea eliminar algun favorito\n");  
+  printf("(3)Si desea guardar algun favorito\n");
+  printf("(0)Si desea volver al menu principal\n");
 }
 
 void switchCaso3(int instruccionCaso1){
@@ -455,8 +469,9 @@ int validarInstruccionCaso4(){
 }
 
 void mostrarOpcionesCaso4(){
-
-  printf("(1)Si desea ver el historial\n(2)Si desea borrar el historial\n(0)Si desea volver al menu principal\n\n");
+  printf("(1)Si desea ver el historial\n");
+  printf("(2)Si desea borrar el historial\n");
+  printf("(0)Si desea volver al menu principal\n\n");
 }
 
 void switchCaso4(int instruccionCaso1){
